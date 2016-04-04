@@ -6,8 +6,8 @@ QMAKE_CFLAGS += -std=gnu++11
 QMAKE_LFLAGS += -static
 
 SOURCES += \
-    song_riper.cpp \
-    midi.cpp
+    song_ripper.cpp \
+    midi.cpp \
 
 HEADERS += \
     midi.hpp

@@ -158,7 +158,7 @@ int GBASamples::build_pulse_samples(unsigned int duty_cycle)
 	}
 
 	//This data is referenced to my set of recordings
-	//stored in "psg_data.raw"
+    //stored in "psg_data.raw"
 	const int pointer_tbl[3][5] =
 	{
 			{0x0000, 0x2166, 0x3c88, 0x4bd2, 0x698a},

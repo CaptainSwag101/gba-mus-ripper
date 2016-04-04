@@ -1,5 +1,5 @@
 /**
- * GBAMusripper (c) 2012 by Bregalad
+ * GBAMusRipper (c) 2012 by Bregalad
  * This is free and open source software
  * 
  * This program analyzes a Game Boy Advance ROM and searches for a sound engine

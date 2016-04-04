@@ -1,7 +1,7 @@
 /**
  * Sound Font chunk classes
  * 
- * This is part of the GBA SoundFont Riper (c) 2012 by Bregalad
+ * This is part of the GBA SoundFont ripper (c) 2012 by Bregalad
  * This is free and open source software.
  * 
  * Notes : I tried to separate the GBA-related stuff and SF2 related stuff as much as possible in different classes

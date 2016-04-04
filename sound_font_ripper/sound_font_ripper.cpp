@@ -1,5 +1,5 @@
 /*
- * GBA Sound Font Riper (c) 2012, 2014 by Bregalad
+ * GBA Sound Font ripper (c) 2012, 2014 by Bregalad
  * This is free and open source software.
  * 
  * This program extracts soundfont data from a GBA game using
@@ -44,7 +44,7 @@ static void print_instructions()
 	puts
 	(
 		"Dumps a sound bank (or a list of sound banks) from a GBA game which is using the sappy sound engine to SoundFont 2.0 (.sf2) format\n"
-		"Usage : sound_font_riper [options] in.gba out.sf2 address1 [address2] ...\n"
+        "Usage : sound_font_ripper [options] in.gba out.sf2 address1 [address2] ...\n"
 		"addresses will correspond to instrument banks in increasing order...\n"
 		"Available options :\n"
 		"-v : verbose : Display info about the sound font in text format. If -v is followed by a file name,\n"
@@ -561,7 +561,7 @@ int main(const int argc, char *const argv[])
 
 	// Compute prefix (path) of this program's name
 	std::string prg_name = argv[0];
-	std::string prg_prefix = prg_name.substr(0, prg_name.find("sound_font_riper"));
+    std::string prg_prefix = prg_name.substr(0, prg_name.find("sound_font_ripper"));
 
 	// Create SF2 class
 	sf2 = new SF2(sample_rate);
