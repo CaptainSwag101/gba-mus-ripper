@@ -169,7 +169,7 @@ int main(int argc, char *const argv[])
 		// Auto-detect address of sappy engine
 #ifdef WIN32
 		// On windows, just use the 32-bit return code of the sappy_detector executable
-		std::string sappy_detector_cmd = prg_prefix + "sappy_detector \"" + inGBA_path + '"';
+        std::string sappy_detector_cmd = prg_prefix + "sappy_detector\" \"" + inGBA_path + '"';
 		int sound_engine_adr = std::system(sappy_detector_cmd.c_str());
 #else
 		// On linux the function is duplicated in this executable
