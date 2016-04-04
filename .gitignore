@@ -1,3 +1,8 @@
+# Build directories
+
+[Dd]ebug/
+[Rr]elease/
+
 # C++ objects and libs
 
 *.slo
