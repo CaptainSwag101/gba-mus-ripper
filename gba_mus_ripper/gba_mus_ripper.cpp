@@ -41,9 +41,10 @@ static void print_instructions()
 {
 	puts(
         "  /=================================================================\\\n"
-        "-<   GBA Mus Ripper 3.2 (c) 2015 Bregalad, (c) 2016 CaptainSwag101   >-\n"
+        "-<   GBA Mus Ripper 3.3 (c) 2015 Bregalad, (c) 2016 CaptainSwag101   >-\n"
         "  \\=================================================================/\n\n"
-        "Usage : gba_mus_ripper game.gba [address] [flags]\n\n"
+        "Usage : gba_mus_ripper game.gba [-o output path] [flags] [address]\n\n"
+        "-o   : Output path. All MIDIs and soundfonts will be ripped to a subfolder inside this directory.\n"
 		"-gm  : Give General MIDI names to presets. Note that this will only change the names and will NOT\n"
 		"       magically turn the soundfont into a General MIDI compliant soundfont.\n"
 		"-rc  : Rearrange channels in output MIDIs so channel 10 is avoided. Needed by sound\n"
@@ -71,7 +72,7 @@ static void mkdir(std::string name)
 	system(("mkdir \"" + name + '"').c_str());
 }
 
-//  Convert number to string with always 3 digits (even if leading zeroes)
+//  Convert number to string with always 3 digits (even if leading zeros)
 static std::string dec3(unsigned int n)
 {
 	std::string s;
@@ -169,8 +170,14 @@ int main(int argc, char *const argv[])
 		// Auto-detect address of sappy engine
 #ifdef WIN32
 		// On windows, just use the 32-bit return code of the sappy_detector executable
-        std::string sappy_detector_cmd = prg_prefix + "sappy_detector\" \"" + inGBA_path + '"';
-		int sound_engine_adr = std::system(sappy_detector_cmd.c_str());
+        std::string sappy_detector_cmd;
+        if (prg_prefix[0] == '"')
+            sappy_detector_cmd = prg_prefix + "sappy_detector\" \"" + inGBA_path + '"';
+        else
+            sappy_detector_cmd = '"' + prg_prefix + "sappy_detector\" \"" + inGBA_path + '"';
+        //printf(sappy_detector_cmd.c_str());
+        //printf("\n");
+        int sound_engine_adr = std::system(sappy_detector_cmd.c_str());
 #else
 		// On linux the function is duplicated in this executable
 		const char *sappy_detector_argv1 = inGBA_path.c_str();

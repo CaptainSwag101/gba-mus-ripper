@@ -21,3 +21,7 @@ cd gba_mus_ripper\
 robocopy .\debug ..\debug gba_mus_ripper.exe
 robocopy .\release ..\release gba_mus_ripper.exe
 cd ..
+cd gba_mus_ripper_gui\
+robocopy .\debug ..\debug gba_mus_ripper_gui.exe
+robocopy .\release ..\release gba_mus_ripper_gui.exe
+cd ..
