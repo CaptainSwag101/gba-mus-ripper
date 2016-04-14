@@ -27,7 +27,6 @@ static FILE *inGBA;
 static std::string inGBA_path;
 static size_t inGBA_size;
 static std::string name;
-static std::string path;
 static std::string outPath;
 static bool gm = false;
 static bool xg = false;
@@ -387,5 +386,5 @@ int main(int argc, char *const argv[])
         system(sf_rip_args.c_str());
     }
     puts("Rip completed !");
-    return 0;
+    exit(0);
 }

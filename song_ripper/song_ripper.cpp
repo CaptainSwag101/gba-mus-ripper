@@ -550,8 +550,10 @@ static uint32_t parseArguments(const int argv, const char *const args[])
 		exit(0);
 	}
 
-	for(int i=3; i<argv; i++)
+    for(int i = 3; i < argv; i++)
 	{
+        printf("arg #%d = %s\n", i, args[i]);
+        printf("\n");
 		if(args[i][0] == '-')
 		{
 			if(args[i][1] == 'b')
