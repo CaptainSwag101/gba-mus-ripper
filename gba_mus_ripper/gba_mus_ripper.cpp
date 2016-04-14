@@ -41,7 +41,7 @@ static void print_instructions()
 {
     puts(
                 "  /=================================================================\\\n"
-                "-<   GBA Mus Ripper 3.3 (c) 2015 Bregalad, (c) 2016 CaptainSwag101   >-\n"
+                "-<   GBA Mus Ripper 3.4 (c) 2015 Bregalad, (c) 2016 CaptainSwag101   >-\n"
                 "  \\=================================================================/\n\n"
                 "Usage : gba_mus_ripper game.gba [-o output path] [flags] [address]\n\n"
                 "-o   : Output path. All MIDIs and soundfonts will be ripped to a subfolder inside this directory.\n"
@@ -57,7 +57,7 @@ static void print_instructions()
                 "-adr : Force adress of the song table manually. This is required for manually dumping music data\n"
                 "       from ROMs where the location can't be detected automatically.\n"
                 );
-    exit(0);
+    exit(-1);
 }
 
 static uint32_t get_GBA_pointer()
@@ -122,7 +122,7 @@ static void parse_args(const int argc, char *const args[])
             if(!inGBA)
             {
                 fprintf(stderr, "Error : Can't open file %s for reading.\n", args[i]);
-                exit(-1);
+                exit(-2);
             }
 
             // Name is filename without the extention and without path
@@ -141,7 +141,7 @@ static void parse_args(const int argc, char *const args[])
             if(errno)
             {
                 fprintf(stderr, "Error : %s is not a valid song table address.\n", args[i]);
-                exit(-1);
+                exit(-3);
             }
             song_tbl_found = true;
         }
@@ -199,12 +199,12 @@ int main(int argc, char *const argv[])
 #endif
 
         // Exit if no sappy engine was found
-        if(!sound_engine_adr) exit(0);
+        if(!sound_engine_adr) exit(-4);
 
         if(fseek(inGBA, sound_engine_adr, SEEK_SET))
         {
             fprintf(stderr, "Error : Invalid offset within input GBA file : 0x%x\n", sound_engine_adr);
-            exit(0);
+            exit(-5);
         }
 
         // Engine parameter's word
@@ -232,7 +232,7 @@ int main(int argc, char *const argv[])
     if(song_tbl_ptr >= inGBA_size)
     {
         fprintf(stderr, "Fatal error : Song table at 0x%x is past the end of the file.\n", song_tbl_ptr);
-        exit(0);
+        exit(-6);
     }
 
     printf("Parsing song table...");
@@ -244,7 +244,7 @@ int main(int argc, char *const argv[])
     if(fseek(inGBA, song_tbl_ptr, SEEK_SET))
     {
         fprintf(stderr, "Fatal error : Can't seek to song table at : 0x%x\n", song_tbl_ptr);
-        exit(0);
+        exit(-7);
     }
 
     // Ignores entries which are made of 0s at the start of the song table
@@ -265,7 +265,7 @@ int main(int argc, char *const argv[])
         // Stop as soon as we met with an invalid pointer
         if(song_pointer == 0 || song_pointer >= inGBA_size) break;
 
-        for(int j=4; j!=0; --j) fgetc(inGBA);		// Discard 4 bytes (sound group)
+        for(int j = 4; j != 0; --j) fgetc(inGBA);		// Discard 4 bytes (sound group)
         song_list.push_back(song_pointer);			// Add pointer to list
         i++;
         fread(&song_pointer, 4, 1, inGBA);
@@ -273,7 +273,7 @@ int main(int argc, char *const argv[])
     // As soon as data that is not a valid pointer is found, the song table is terminated
 
     // End of song table
-    uint32_t song_tbl_end_ptr = 8*i + song_tbl_ptr;
+    uint32_t song_tbl_end_ptr = 8 * i + song_tbl_ptr;
 
     puts("Collecting sound bank list...");
 
