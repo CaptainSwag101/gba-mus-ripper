@@ -691,6 +691,6 @@ int main(int argc, char *argv[])
 	midi.write(outMID);
 	// Close files
 	fclose(inGBA);
-	puts(" Done !");
+    puts(" Done!");
 	return instr_bank_address;
 }
