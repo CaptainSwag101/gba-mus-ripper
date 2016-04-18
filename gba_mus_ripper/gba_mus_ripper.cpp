@@ -303,7 +303,7 @@ int main(int argc, char *const argv[])
         for(bank_t j = sound_bank_list.begin(); j != sound_bank_list.end(); ++j)
         {
             unsigned int d = std::distance(sound_bank_list.begin(), j);
-            std::string subdir = outPath + name + '/' + "soundbank_" + dec3(d);
+            std::string subdir = outPath + '\\' + name + '/' + "soundbank_" + dec3(d);
             mkdir(subdir);
         }
     }
