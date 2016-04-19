@@ -18,7 +18,8 @@ typedef enum
 	UNSIGNED_8,
 	SIGNED_8,
 	SIGNED_16,
-	GAMEBOY_CH3
+	GAMEBOY_CH3,
+	BDPCM
 }
 SampleType;
 

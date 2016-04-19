@@ -1,7 +1,7 @@
 /**
  * Sound Font chunk classes
  * 
- * This is part of the GBA SoundFont ripper (c) 2012 by Bregalad
+ * This is part of the GBA SoundFont Ripper (c) 2012 by Bregalad
  * This is free and open source software.
  * 
  * Notes : I tried to separate the GBA-related stuff and SF2 related stuff as much as possible in different classes
@@ -395,6 +395,48 @@ public:
 							outbuf[l] = conv_tbl[data[j]&0xf];
 					}
 				}	break;
+				
+				case BDPCM:
+				{
+					static const int8_t delta_lut[] = {0, 1, 4, 9, 16, 25, 36, 49, -64, -49, -36, -25, -16, -9, -4, -1};
+
+					/*
+					 * A block consists of an initial signed 8 bit PCM byte
+					 * followed by 63 nibbles stored in 32 bytes.
+					 * The first of these bytes has a zero padded (unused) high nibble.
+					 * This makes up of a total block size of 65 (0x21) bytes each.
+					 *
+					 * Decoding works like this:
+					 * The initial byte can be directly read without decoding. Then each
+					 * next sample can be decoded by putting the nibble into the delta-lookup-table 
+					 * and adding that value to the previously calculated sample
+					 * until the end of the block is reached.
+					 */
+
+					unsigned int nblocks = size_list[i] / 64;		// 64 samples per block
+
+					char (*data)[33] = new char[nblocks][33];
+					fread(data, 33, nblocks, file_list[i]);
+
+					for(unsigned int block=0; block < nblocks; ++block)
+					{
+						int8_t sample = data[block][0];
+						outbuf[64*block] = sample << 8;
+						sample += delta_lut[data[block][1] & 0xf];
+						outbuf[64*block+1] = sample << 8;
+						for (unsigned int j = 1; j < 32; ++j)
+						{
+							uint8_t d = data[block][j+1];
+							sample += delta_lut[d >> 4];
+							outbuf[64*block+2*j] = sample << 8;
+							sample += delta_lut[d & 0xf];
+							outbuf[64*block+2*j+1]= sample << 8;
+						}
+					}
+					memset(outbuf+64*nblocks, 0, size_list[i]-64*nblocks);		// Remaining samples are always 0
+
+					delete[] data;
+				}   break;
 			}
 
 			// Write buffer

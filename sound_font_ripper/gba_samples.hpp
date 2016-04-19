@@ -1,7 +1,7 @@
 /*
  * Sound Font Samples class
  * 
- * This program is part of GBA SoundFontripper (c) 2012 by Bregalad
+ * This program is part of GBA SoundFont Ripper (c) 2012 by Bregalad
  * This is free and open source software.
  */
 

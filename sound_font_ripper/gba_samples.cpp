@@ -40,10 +40,17 @@ int GBASamples::build_sample(uint32_t pointer)
 
 	//Detect invalid samples
 	bool loop_en;
+    bool bdpcm_en = false;
+	
 	if(hdr.loop == 0x40000000)
 		loop_en = true;
 	else if (hdr.loop == 0x00000000)
 		loop_en = false;
+	else if (hdr.loop == 0x1)
+	{
+		bdpcm_en = true;    // Detect compressed samples
+	    loop_en = false;
+	}
 	else
 		throw -1;			// Invalid loop -> return error
 
@@ -106,10 +113,10 @@ int GBASamples::build_sample(uint32_t pointer)
 		}
 
 		// Create (poetic) instrument name
-		std::string name = "Sample @0x" + hex(pointer);
+		std::string name = (bdpcm_en ? "BDPCM @0x" : "Sample @0x") + hex(pointer);
 
 		// Add the sample to output
-		sf2->add_new_sample(inGBA, SIGNED_8, name.c_str(), pointer + 16, hdr.len, loop_en, hdr.loop_pos, original_pitch, pitch_correction);
+		sf2->add_new_sample(inGBA, bdpcm_en ? BDPCM : SIGNED_8, name.c_str(), pointer + 16, hdr.len, loop_en, hdr.loop_pos, original_pitch, pitch_correction);
 	}
 	samples_list.push_back(pointer);
 	return samples_list.size() - 1;
@@ -158,7 +165,7 @@ int GBASamples::build_pulse_samples(unsigned int duty_cycle)
 	}
 
 	//This data is referenced to my set of recordings
-    //stored in "psg_data.raw"
+	//stored in "psg_data.raw"
 	const int pointer_tbl[3][5] =
 	{
 			{0x0000, 0x2166, 0x3c88, 0x4bd2, 0x698a},

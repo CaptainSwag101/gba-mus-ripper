@@ -1,5 +1,5 @@
 /*
- * GBA Sound Font ripper (c) 2012, 2014 by Bregalad
+ * GBA Sound Font Ripper (c) 2012, 2014 by Bregalad
  * This is free and open source software.
  * 
  * This program extracts soundfont data from a GBA game using
@@ -44,7 +44,7 @@ static void print_instructions()
 	puts
 	(
 		"Dumps a sound bank (or a list of sound banks) from a GBA game which is using the sappy sound engine to SoundFont 2.0 (.sf2) format\n"
-        "Usage : sound_font_ripper [options] in.gba out.sf2 address1 [address2] ...\n"
+        "Usage: sound_font_ripper [options] in.gba out.sf2 address1 [address2] ...\n"
 		"addresses will correspond to instrument banks in increasing order...\n"
 		"Available options :\n"
 		"-v : verbose : Display info about the sound font in text format. If -v is followed by a file name,\n"
@@ -110,6 +110,10 @@ static void build_instrument(const inst_data inst)
 			case 0x08:
 			case 0x10:
 			case 0x18:
+			case 0x20:
+			case 0x28:
+			case 0x30:
+			case 0x38:
 			{
 				int i = instruments->build_sampled_instrument(inst);
 				sf2->add_new_preset(name.c_str(), current_instrument, current_bank);
@@ -237,8 +241,12 @@ static void verbose_instrument(const inst_data inst, bool recursive)
 		// Sampled instruments
 		case 0 :
 		case 8 :
-		case 16 :
-		case 24 :
+		case 0x10 :
+		case 0x18 :
+		case 0x20 :
+		case 0x28 :
+		case 0x30 :
+		case 0x38 :
 		{
 			uint32_t sadr = inst.word1 & 0x3ffffff;
 			fprintf(out_txt, "(sample @0x%x)\n", sadr);
@@ -260,11 +268,13 @@ static void verbose_instrument(const inst_data inst, bool recursive)
 				fprintf(out_txt, "      Length : %u\n", ins.len);
 
 				if(ins.loop == 0)
-					fputs("      Not looped", out_txt);
+					fputs("      Not looped\n", out_txt);
 				else if(ins.loop == 0x40000000)
 					fprintf(out_txt, "      Loop enabled at : %u\n", ins.loop_pos);
+				else if(ins.loop == 0x1)
+					fputs("      BDPCM compressed\n", out_txt);
 				else
-					fputs("      Unknown loop type", out_txt);
+					fputs("      Unknown loop type\n", out_txt);
 
 				adsr(inst.word2);
 			}
@@ -312,7 +322,7 @@ static void verbose_instrument(const inst_data inst, bool recursive)
 
 				for(int j=0; j<16; j++)
 				{
-					int a = fgetc(inGBA);
+					uint8_t a = fgetc(inGBA);
 					waveform[2*j] = a>>4;
 					waveform[2*j+1] = a & 0xF;
 				}
@@ -344,9 +354,9 @@ static void verbose_instrument(const inst_data inst, bool recursive)
 			fputs("(GB noise channel 4)", out_txt);
 			adsr(inst.word2);
 			if(inst.word1  == 0)
-				fputs("      long random sequence", out_txt);
+				fputs("      long random sequence\n", out_txt);
 			else
-				fputs("      short random sequence", out_txt);
+				fputs("      short random sequence\n", out_txt);
 			break;
 
 		// Key-split instruments
@@ -355,7 +365,7 @@ static void verbose_instrument(const inst_data inst, bool recursive)
 
 			if(!recursive)
 			{
-				bool *keys_used = new bool[128];
+				bool *keys_used = new bool[128]();
 				try
 				{
 				// seek to key table's location
@@ -522,7 +532,7 @@ static void parse_arguments(const int argc, char *const argv[])
 			if(!outSF2)
 			{
 				fprintf(stderr, "Can't write on file : %s\n", argv[i]);
-				exit(0);
+				exit(-1);
 			}
 			if(buffer != argv[i])
 				delete[] buffer;
@@ -537,12 +547,12 @@ static void parse_arguments(const int argc, char *const argv[])
 	// Diagnostize errors/missing information
 	if(!infile_found)
 	{
-		fputs("An input file should be given. Use -help for more information.\n", stderr);
+		fputs("An input .gba file should be given. Use -help for more information.\n", stderr);
 		exit(-1);
 	}
 	if(!outfile_found)
 	{
-		fputs("An output file should be given. Use -help for more information.\n", stderr);
+		fputs("An output .sf2 file should be given. Use -help for more information.\n", stderr);
 		exit(-1);
 	}
 	if(addresses.empty())

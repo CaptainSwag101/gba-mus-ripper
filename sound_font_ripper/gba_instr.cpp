@@ -1,5 +1,5 @@
 /*
- * This file is part of GBA Sound ripper
+ * This file is part of GBA Sound Ripper
  * (c) 2012, 2014 Bregalad
  * This is free and open source software
  *
@@ -242,7 +242,7 @@ int GBAInstr::build_every_keysplit_instrument(const inst_data inst)
 					// Build corresponding sample
 					sample_index = samples.build_noise_sample(metal_flag, keynum);
 					sf2->add_new_inst_bag();
-                    generate_psg_adsr_generators(adsr);
+					generate_psg_adsr_generators(adsr);
 					sf2->add_new_inst_generator(SFGenerator::overridingRootKey, key);
 					sf2->add_new_inst_generator(SFGenerator::keyRange, key, key);
 				}	break;
