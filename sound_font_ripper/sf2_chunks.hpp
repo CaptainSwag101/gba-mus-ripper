@@ -105,7 +105,7 @@ public:
 	{
 		fwrite(&ach_preset_name, 1, 38, sf2->out);
 	}
-}__attribute__ ((packed));
+};
 
 // Preset bag class
 class sfBag
