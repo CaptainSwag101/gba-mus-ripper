@@ -248,7 +248,7 @@ static void verbose_instrument(const inst_data inst, bool recursive)
 		case 0x30 :
 		case 0x38 :
 		{
-			uint32_t sadr = inst.word1 & 0x3ffffff;
+            uint32_t sadr = inst.word1 & 0x3ffffff;
 			fprintf(out_txt, "(sample @0x%x)\n", sadr);
 
 			try
@@ -256,10 +256,10 @@ static void verbose_instrument(const inst_data inst, bool recursive)
 				if(fseek(inGBA, sadr, SEEK_SET)) throw -1;
 				struct
 				{
-					uint32_t loop;
-					uint32_t pitch;
-					uint32_t loop_pos;
-					uint32_t len;
+                    uint32_t loop;
+                    uint32_t pitch;
+                    uint32_t loop_pos;
+                    uint32_t len;
 				}
 				ins;
 				fread(&ins, 4, 4, inGBA);
@@ -417,7 +417,7 @@ static void verbose_instrument(const inst_data inst, bool recursive)
 
 			if(!recursive)
 			{
-				uint32_t address = inst.word1 & 0x3ffffff;
+                uint32_t address = inst.word1 & 0x3ffffff;
 				for(int k = 0; k<128; ++k)
 				{
 					try
@@ -539,7 +539,7 @@ static void parse_arguments(const int argc, char *const argv[])
 		}
 		else
 		{
-			uint32_t address = strtoul(argv[i], 0, 0);
+            uint32_t address = strtoul(argv[i], 0, 0);
 			if(!address) print_instructions();
 			addresses.insert(address);				
 		}
@@ -564,7 +564,7 @@ static void parse_arguments(const int argc, char *const argv[])
 
 int main(const int argc, char *const argv[])
 {
-	puts("GBA ROM sound font ripper (c) 2012 Bregalad");
+    puts("GBA ROM sound font ripper (c) 2012 Bregalad");
 
 	// Parse arguments without the program name
 	parse_arguments(argc-1, argv+1);
@@ -592,12 +592,12 @@ int main(const int argc, char *const argv[])
 
 	// Decode all banks
 	current_bank = 0;
-	for(std::set<uint32_t>::iterator it = addresses.begin(); it != addresses.end(); ++it, ++current_bank)
-	{
-		current_address = *it;
-		std::set<uint32_t>::iterator next_it = it;
-		++next_it;
-		uint32_t next_address = *next_it;
+    for(std::set<uint32_t>::iterator it = addresses.begin(); it != addresses.end(); ++it, ++current_bank)
+    {
+        current_address = *it;
+        std::set<uint32_t>::iterator next_it = it;
+        ++next_it;
+        uint32_t next_address = *next_it;
 
 		// Limit the # of presets if the addresses overlaps
 		unsigned int ninstr = 128;
@@ -614,7 +614,7 @@ int main(const int argc, char *const argv[])
 
 		// Decode all instruments
 		for(current_instrument = 0; current_instrument < ninstr; ++current_instrument, current_address += 12)
-		{
+        {
 			print("\nBank : " + std::to_string(current_bank) + ", Instrument : " + std::to_string(current_instrument) + " @0x" + hex(current_address));
 
 			// Ignore unused instruments
@@ -632,7 +632,7 @@ int main(const int argc, char *const argv[])
 			// Build equivalent SF2 instrument
 			build_instrument(instr_data[current_instrument]);
 		}
-	}
+    }
 	delete[] instr_data;
 
 	if(verbose_output_to_file)
