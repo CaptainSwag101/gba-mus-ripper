@@ -1,5 +1,5 @@
 /**
- * GBA Songripper (c) 2012, 2014 by Bregalad
+ * GBA SongRiper (c) 2012, 2014 by Bregalad
  * This is free and open source software
  * 
  * This program convert a GBA song for the sappy sound engine into MIDI (.mid) format.
@@ -58,7 +58,7 @@ static void print_instructions()
 {
 	puts(
 		"Rips sequence data from a GBA game using sappy sound engine to MIDI (.mid) format.\n"
-		"\nUsage : song_ripper infile.gba outfile.mid song_adress [-b1 -gm -gs -xg]\n"
+		"\nUsage : song_riper infile.gba outfile.mid song_adress [-b1 -gm -gs -xg]\n"
 		"-b : Bank : forces all patches to be in the specified bank (0-127)\n"
 		"In general MIDI, midi channel 10 is reserved for drums\n"
 		"Unfortunately, we do not want to use any \"drums\" in the output file\n"
@@ -550,10 +550,8 @@ static uint32_t parseArguments(const int argv, const char *const args[])
 		exit(0);
 	}
 
-    for(int i = 3; i < argv; i++)
+	for(int i=3; i<argv; i++)
 	{
-        printf("arg #%d = %s\n", i, args[i]);
-        printf("\n");
 		if(args[i][0] == '-')
 		{
 			if(args[i][1] == 'b')
@@ -693,6 +691,6 @@ int main(int argc, char *argv[])
 	midi.write(outMID);
 	// Close files
 	fclose(inGBA);
-    puts(" Done!");
+	puts(" Done !");
 	return instr_bank_address;
 }

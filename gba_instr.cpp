@@ -1,5 +1,5 @@
 /*
- * This file is part of GBA Sound Ripper
+ * This file is part of GBA Sound Riper
  * (c) 2012, 2014 Bregalad
  * This is free and open source software
  *
