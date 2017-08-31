@@ -41,9 +41,9 @@ static void print_instructions()
 {
 	puts(
 		"  /=====================================================================\\\n"
-		"-<   GBA Mus Riper 3.2 (c) 2012-2015 Bregalad, (c) 2017 CaptainSwag101   >-\n"
+		"-<   GBA Mus Ripper 3.2 (c) 2012-2015 Bregalad, (c) 2017 CaptainSwag101   >-\n"
 		"  \\=====================================================================/\n\n"
-		"Usage: gba_mus_riper game.gba [address] [flags]\n\n"
+		"Usage: gba_mus_ripper (input_file) [address] [flags]\n\n"
 		"-gm  : Give General MIDI names to presets. Note that this will only change the names and will NOT magically turn the soundfont into a General MIDI compliant soundfont.\n"
 		"-rc  : Rearrange channels in output MIDIs so channel 10 is avoided. Needed by sound cards where it's impossible to disable \"drums\" on channel 10 even with GS or XG commands.\n"
 		"-xg  : Output MIDI will be compliant to XG standard (instead of default GS standard).\n"
@@ -63,7 +63,7 @@ static uint32_t get_GBA_pointer()
 
 static void mkdir(std::string name)
 {
-	system(("mkdir \"" + name + '"').c_str());
+	system(("mkdir \"" + name + "\"").c_str());
 }
 
 //  Convert number to string with always 3 digits (even if leading zeroes)
@@ -85,7 +85,7 @@ static void parse_args(const int argc, char *const args[])
 	{
 		if (args[i][0] == '-')
 		{
-			if (!strcmp(args[i], "-help"))
+			if (!strcmp(args[i], "--help"))
 				print_instructions();
 			else if (!strcmp(args[i], "-gm"))
 				gm = true;
@@ -99,7 +99,7 @@ static void parse_args(const int argc, char *const args[])
 				raw = true;
 			else
 			{
-				fprintf(stderr, "Error: Unknown command line option: %s. Try with -help to get information.\n", args[i]);
+				fprintf(stderr, "Error: Unknown command line option: %s. Try with --help to get information.\n", args[i]);
 				exit(-1);
 			}
 		}
@@ -154,7 +154,7 @@ int main(int argc, char *const argv[])
 
 	// Compute program prefix (should be "", "./", "../" or whathever)
 	std::string prg_name = argv[0];
-	std::string prg_prefix = prg_name.substr(0, prg_name.rfind("gba_mus_riper"));
+	std::string prg_prefix = prg_name.substr(0, prg_name.rfind("gba_mus_ripper"));
 
 	int sample_rate = 0, main_volume = 0;		// Use default values when those are '0'
 
@@ -164,7 +164,7 @@ int main(int argc, char *const argv[])
 		// Auto-detect address of sappy engine
 #ifdef WIN32
 		// On windows, just use the 32-bit return code of the sappy_detector executable
-		std::string sappy_detector_cmd = prg_prefix + "sappy_detector \"" + inGBA_path + '"';
+		std::string sappy_detector_cmd = prg_prefix + "sappy_detector \"" + inGBA_path + "\"";
 		int sound_engine_adr = std::system(sappy_detector_cmd.c_str());
 #else
 		// On linux the function is duplicated in this executable
@@ -268,7 +268,7 @@ int main(int argc, char *const argv[])
 		}
 	}
 
-	// Close GBA file so that SongRiper can access it
+	// Close GBA file so that SongRipper can access it
 	fclose(inGBA);
 
 	// Create directories for each sound bank if separate banks is enabled
@@ -287,7 +287,7 @@ int main(int argc, char *const argv[])
 		if (song_list[i] != song_tbl_end_ptr)
 		{
 			unsigned int bank_index = distance(sound_bank_list.begin(), sound_bank_index_list[i]);
-			std::string seq_rip_cmd = prg_prefix + "song_riper \"" + inGBA_path + "\" \"" + name;
+			std::string seq_rip_cmd = prg_prefix + "song_ripper \"" + inGBA_path + "\" \"" + name;
 
 			// Add leading zeroes to file name
 			if (sb) seq_rip_cmd += "/soundbank_" + dec3(bank_index);
@@ -321,7 +321,7 @@ int main(int argc, char *const argv[])
 
 			std::string sbnumber = dec3(bank_index);
 			std::string foldername = "soundbank_" + sbnumber;
-			std::string sf_rip_args = prg_prefix + "sound_font_riper \"" + inGBA_path + "\" \"" + name + '/';
+			std::string sf_rip_args = prg_prefix + "sound_font_ripper \"" + inGBA_path + "\" \"" + name + '/';
 			sf_rip_args += foldername + '/' + foldername /* + "_@" + hex(*j) */ + ".sf2\"";
 
 			if (sample_rate) sf_rip_args += " -s" + std::to_string(sample_rate);
@@ -329,7 +329,7 @@ int main(int argc, char *const argv[])
 			if (gm) sf_rip_args += " -gm";
 			sf_rip_args += " 0x" + hex(*j);
 
-// 			printf("DEBUG: Goint to call system(%s)\n", sf_rip_args.c_str());
+            //printf("DEBUG: Goint to call system(%s)\n", sf_rip_args.c_str());
 			system(sf_rip_args.c_str());
 		}
 	}
@@ -338,7 +338,7 @@ int main(int argc, char *const argv[])
 		// Rips each sound bank in a single soundfont file
 		// Build argument list to call sound_font_riper
 		// Output sound font named after the input ROM
-		std::string sf_rip_args = prg_prefix + "sound_font_riper \"" + inGBA_path + "\" \"" + name + '/' + name + ".sf2\"";
+		std::string sf_rip_args = prg_prefix + "sound_font_ripper \"" + inGBA_path + "\" \"" + name + '/' + name + ".sf2\"";
 		if (sample_rate) sf_rip_args += " -s" + std::to_string(sample_rate);
 		if (main_volume) sf_rip_args += " -mv" + std::to_string(main_volume);
 		// Pass -gm argument if necessary
@@ -348,10 +348,11 @@ int main(int argc, char *const argv[])
 		for (bank_t j=sound_bank_list.begin(); j != sound_bank_list.end(); ++j)
 			sf_rip_args += " 0x" + hex(*j);
 
-		// Call sound font riper
-// 		printf("DEBUG: Going to call system(%s)\n", sf_rip_args.c_str());
+		// Call sound font ripper
+        //printf("DEBUG: Going to call system(%s)\n", sf_rip_args.c_str());
 		system(sf_rip_args.c_str());
 	}
-	puts("Rip completed !");
+
+	puts("Rip completed!");
 	return 0;
 }

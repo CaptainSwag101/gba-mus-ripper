@@ -1,10 +1,10 @@
 /**
- * GBA SongRiper (c) 2012, 2014 by Bregalad
+ * GBA SongRipper (c) 2012, 2014 by Bregalad
  * This is free and open source software
- * 
- * This program convert a GBA song for the sappy sound engine into MIDI (.mid) format.
+ *
+ * This program converts a GBA song for the Sappy sound engine into MIDI (.mid) format.
  */
- 
+
 #include "midi.hpp"
 #include <algorithm>
 #include <forward_list>
@@ -57,20 +57,17 @@ static void process_event(int track);
 static void print_instructions()
 {
 	puts(
-		"Rips sequence data from a GBA game using sappy sound engine to MIDI (.mid) format.\n"
-		"\nUsage : song_riper infile.gba outfile.mid song_adress [-b1 -gm -gs -xg]\n"
-		"-b : Bank : forces all patches to be in the specified bank (0-127)\n"
-		"In general MIDI, midi channel 10 is reserved for drums\n"
-		"Unfortunately, we do not want to use any \"drums\" in the output file\n"
-		"I have 3 modes to fix this problem\n"
+		"Rips sequence data from a GBA game using Sappy sound engine to MIDI (.mid) format.\n"
+		"\nUsage : song_riper infile.gba outfile.mid song_address [-b1 -gm -gs -xg]\n"
+		"-b : Bank : forces all patches to be in the specified bank (0-127).\n"
+		"In General MIDI, channel 10 is reserved for drums.\n"
+		"Unfortunately, we do not want to use any \"drums\" in the output file.\n"
+		"I have 3 modes to fix this problem.\n"
 		"-rc : Rearrange Channels. This will avoid using the channel 10, and use it at last ressort only if all 16 channels should be used\n"
 		"-gs : This will send a GS system exclusive message to tell the player channel 10 is not drums\n"
 		"-xg : This will send a XG system exclusive message, and force banks number which will disable \"drums\"\n"
-		"-lv : Linearise volume and velocities. This should be used to have the output \"sound\" like the original song,\n"
-		"      but shouldn't be used to get an exact dump of sequence data."
-		"-sv : Simulate vibrato. This will insert controllers in real time to simulate a vibrato, instead of just\n"
-		"      when commands are given. Like -lv, this should be used to have the output \"sound\" like the original song,\n"
-		"      but shouldn't be used to get an exact dump of sequence data.\n"
+		"-lv : Linearise volume and velocities. This should be used to have the output \"sound\" like the original song, but shouldn't be used to get an exact dump of sequence data."
+		"-sv : Simulate vibrato. This will insert controllers in real time to simulate a vibrato, instead of just when commands are given. Like -lv, this should be used to have the output \"sound\" like the original song, but shouldn't be used to get an exact dump of sequence data.\n\n"
 		"It is possible, but not recommended, to use more than one of these flags at a time.\n"
 	);
 	exit(0);
@@ -514,7 +511,7 @@ static void process_event(int track)
 					// Yes -> use new velocity value
 					vel = arg2;
 					last_vel[track] = vel;
-					track_ptr[track]++;					
+					track_ptr[track]++;
 				}
 				else	// No -> use previous velocity value
 					vel = last_vel[track];
@@ -588,14 +585,14 @@ int main(int argc, char *argv[])
 
 	if(fseek(inGBA, base_address, SEEK_SET))
 	{
-		fprintf(stderr, "Can't seek to the base adress 0x%x.\n", base_address);
+		fprintf(stderr, "Can't seek to the base address 0x%x.\n", base_address);
 		exit(0);
 	}
 
 	int track_amnt = fgetc(inGBA);
 	if(track_amnt < 1 || track_amnt > 16)
 	{
-		fprintf(stderr, "Invalid amount of tracks %d ! (must be 1-16)\n", track_amnt);
+		fprintf(stderr, "Invalid amount of tracks %d! (must be 1-16)\n", track_amnt);
 		exit(0);
 	}
 	printf("%u tracks.\n", track_amnt);
@@ -605,7 +602,7 @@ int main(int argc, char *argv[])
 	outMID = fopen(argv[2], "wb");
 	if(!outMID)
 	{
-		fprintf(stderr, "Can't write on file %s\n", argv[2]);
+		fprintf(stderr, "Can't write to file %s\n", argv[2]);
 		exit(0);
 	}
 
@@ -685,12 +682,12 @@ int main(int argc, char *argv[])
 	// If a loop was detected this is its end
 	if(loop_flag) midi.add_marker("loopEnd");
 
-	printf("Maximum simultaneous notes : %d\n", simultaneous_notes_max);
+	printf(" Maximum simultaneous notes: %d\n", simultaneous_notes_max);
 
 	printf("Dump complete. Now outputting MIDI file...");
 	midi.write(outMID);
 	// Close files
 	fclose(inGBA);
-	puts(" Done !");
+	puts(" Done!\n");
 	return instr_bank_address;
 }

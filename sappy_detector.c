@@ -27,7 +27,7 @@ static void print_instructions()
 	puts
 	(
 	   "GBA Sappy Engine Detector (c) 2015 by Bregalad and loveemu\n"
-	   "Usage : sappy_detector game.gba\n"
+	   "Usage: sappy_detector game.gba\n"
 	);
 	exit(0);
 }
@@ -123,7 +123,7 @@ static long m4a_searchblock(uint8_t *gbarom, size_t gbasize)
 		if (m4a_selectsong_offset != -1)
 		{
 #ifdef _DEBUG
-			fprintf(stdout, "selectsong candidate: $%08X\n", m4a_selectsong_offset);
+			fprintf(stdout, "Selectsong candidate: $%08X\n", m4a_selectsong_offset);
 #endif
 
 			// obtain song table address
@@ -257,12 +257,12 @@ static bool test_pointer_validity(uint32_t *data, uint32_t inGBA_length)
 int main(const int argc, string argv[])
 {
 	if(argc != 2) print_instructions();
-	puts("Sappy sound engine detector (c) 2014 by Bregalad and loveemu\n");
+	puts("Sappy sound engine detector (c) 2015 by Bregalad and loveemu\n");
 
 	FILE *inGBA = fopen(argv[1], "rb");
 	if(!inGBA)
 	{
-		fprintf(stderr, "Error : File %s can't be opened for reading.\n", argv[1]);
+		fprintf(stderr, "Error: File %s can't be opened for reading.\n", argv[1]);
 		exit(0);
 	}
 
@@ -273,7 +273,7 @@ int main(const int argc, string argv[])
 	uint8_t *inGBA_dump = (uint8_t*)malloc(inGBA_length);
 	if(!inGBA_dump)
 	{
-		fprintf(stderr, "Error, can't allocate memory for ROM dump.\n");
+		fprintf(stderr, "Error: Can't allocate memory for ROM dump.\n");
 		exit(0);
 	}
 
@@ -281,7 +281,7 @@ int main(const int argc, string argv[])
 	size_t errcode = fread(inGBA_dump, 1, inGBA_length, inGBA);
 	if(errcode != inGBA_length)
 	{
-		fprintf(stderr, "Error, can't dump ROM file. %x\n", errcode);
+		fprintf(stderr, "Error: Can't dump ROM file. %x\n", errcode);
 		exit(0);
 	}
 	fclose(inGBA);
@@ -313,14 +313,14 @@ int main(const int argc, string argv[])
 	sound_engine_param_t params = sound_engine_param(data[0]);
 
 	//Read # of song levels
-	printf("# of song levels : %d\n", data[1]);
+	printf("# of song levels: %d\n", data[1]);
 
 	// At this point we can be certain we detected the real thing.
 	printf
 	(
-		"Engine parameters :\n"
-		"Main Volume : %u Polyphony : %u channels, Dac : %u bits, Sampling rate : %s\n"
-		"Song table located at : 0x%x\n",
+		"Engine parameters:\n"
+		"Main Volume: %u Polyphony: %u channels, Dac: %u bits, Sampling rate: %s\n"
+		"Song table located at: 0x%x\n",
 		params.main_vol,
 		params.polyphony,
 		17-params.dac_bits,
