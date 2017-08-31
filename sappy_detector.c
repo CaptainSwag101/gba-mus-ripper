@@ -1,12 +1,11 @@
 /**
  * GBA Sappy Engine Detector (c) 2012, 2014 by Bregalad
  * This is free and open source software
- * 
+ *
  * This programs detects if a snappy sound engine is present in a given GBA ROM.
  * If an engine is present it returns a pointer to the instrument list.
  * If no engine is present, it returns the value 0
  * It's not 100% accurate, so sometimes it might produce erroneous results
- * 
  */
 
 #include <stdlib.h>
@@ -35,9 +34,9 @@ static void print_instructions()
 
 static uint8_t m4a_bin_selectsong[0x1E] =
 {
-	0x00, 0xB5, 0x00, 0x04, 0x07, 0x4A, 0x08, 0x49, 
-	0x40, 0x0B, 0x40, 0x18, 0x83, 0x88, 0x59, 0x00, 
-	0xC9, 0x18, 0x89, 0x00, 0x89, 0x18, 0x0A, 0x68, 
+	0x00, 0xB5, 0x00, 0x04, 0x07, 0x4A, 0x08, 0x49,
+	0x40, 0x0B, 0x40, 0x18, 0x83, 0x88, 0x59, 0x00,
+	0xC9, 0x18, 0x89, 0x00, 0x89, 0x18, 0x0A, 0x68,
 	0x01, 0x68, 0x10, 0x1C, 0x00, 0xF0,
 };
 
@@ -288,7 +287,7 @@ int main(const int argc, string argv[])
 	fclose(inGBA);
 
 	int32_t offset = m4a_searchblock(inGBA_dump, inGBA_length);
-	
+
 	if(offset < 0)
 	{
 		/* If no address were told manually and nothing was detected.... */
@@ -328,7 +327,7 @@ int main(const int argc, string argv[])
 		sr_lookup[params.sampling_rate_index],
 		song_tbl_adr
 	);
-	
+
 	free(inGBA_dump);
 
 	/* Return the offset of sappy info to the operating system */

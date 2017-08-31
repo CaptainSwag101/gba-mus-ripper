@@ -1,34 +1,33 @@
-# Points to C++ compiler, use C++11 standard
-CPPC=i686-w64-mingw32-g++.exe -std=gnu++11
-# Points to C compiler, use C99 standard
-CC=i686-w64-mingw32-gcc.exe -std=c99
+# On Windows
+#CPPC=i686-w64-mingw32-g++.exe -std=gnu++11
+#CC=i686-w64-mingw32-gcc.exe -std=c99
 
-# On linux
-# CPPC=/usr/bin/g++ -std=gnu++11
-# CC=/usr/bin/gcc -std=c99
+# On Linux
+CPPC=g++ -std=gnu++11
+CC=gcc -std=c99
 
 # Parameters used for compilation
-FLAGS=-m32 -Wall -fdata-sections -ffunction-sections -fmax-errors=5 -Os
+FLAGS=-Wall -fdata-sections -ffunction-sections -fmax-errors=5 -Os
 # Additional parameters used for linking whole programs
 WHOLE=-s -fwhole-program -static
 
-all: ../sappy_detector ../song_riper ../sound_font_riper ../gba_mus_riper
+all: $(shell mkdir -p out) out/sappy_detector out/song_riper out/sound_font_riper out/gba_mus_riper
 
-../sappy_detector: sappy_detector.c
-	$(CC) $(FLAGS) $(WHOLE) sappy_detector.c -o ../sappy_detector
+out/sappy_detector: sappy_detector.c
+	$(CC) $(FLAGS) $(WHOLE) sappy_detector.c -o out/sappy_detector
 
-../song_riper: song_riper.cpp midi.hpp midi.o
-	$(CPPC) $(FLAGS) $(WHOLE) song_riper.cpp midi.o -o ../song_riper
+out/song_riper: song_riper.cpp midi.hpp midi.o
+	$(CPPC) $(FLAGS) $(WHOLE) song_riper.cpp midi.o -o out/song_riper
 
-../sound_font_riper: sound_font_riper.o gba_samples.o gba_instr.o sf2.o
-	$(CPPC) $(FLAGS) $(WHOLE) gba_samples.o gba_instr.o sf2.o sound_font_riper.o -o ../sound_font_riper
+out/sound_font_riper: sound_font_riper.o gba_samples.o gba_instr.o sf2.o
+	$(CPPC) $(FLAGS) $(WHOLE) gba_samples.o gba_instr.o sf2.o sound_font_riper.o -o out/sound_font_riper
 
-../gba_mus_riper: gba_mus_riper.cpp hex_string.hpp
-	$(CPPC) $(FLAGS) $(WHOLE) gba_mus_riper.cpp -o ../gba_mus_riper
+out/gba_mus_riper: gba_mus_riper.cpp hex_string.hpp
+	$(CPPC) $(FLAGS) $(WHOLE) gba_mus_riper.cpp -o out/gba_mus_riper
 
 midi.o: midi.cpp midi.hpp
 	$(CPPC) $(FLAGS) -c midi.cpp -o midi.o
-	
+
 gba_samples.o : gba_samples.cpp gba_samples.hpp hex_string.hpp sf2.hpp sf2_types.hpp
 	$(CPPC) $(FLAGS) -c gba_samples.cpp -o gba_samples.o
 
@@ -43,3 +42,4 @@ sound_font_riper.o: sound_font_riper.cpp sf2.hpp gba_instr.hpp hex_string.hpp
 
 clean:
 	rm -f *.o *.s *.i *.ii
+	rm -rf out/
