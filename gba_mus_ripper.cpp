@@ -49,7 +49,7 @@ static void print_instructions()
 		"-xg  : Output MIDI will be compliant to XG standard (instead of default GS standard).\n"
 		"-sb  : Separate banks. Every sound bank is riper to a different .sf2 file and placed into different sub-folders (instead of doing it in a single .sf2 file and a single folder).\n"
 		"-raw : Output MIDIs exactly as they're encoded in ROM, without linearise volume and velocities and without simulating vibratos.\n"
-		"[address]: Force adress of the song table manually. This is required for manually dumping music data from ROMs where the location can't be detected automatically.\n"
+		"[address]: Force address of the song table manually. This is required for manually dumping music data from ROMs where the location can't be detected automatically.\n"
 	);
 	exit(0);
 }
@@ -63,7 +63,11 @@ static uint32_t get_GBA_pointer()
 
 static void mkdir(std::string name)
 {
-	system(("mkdir \"" + name + "\"").c_str());
+    #ifdef _WIN32
+    system(("mkdir \"" + name + "\"").c_str());
+    #else
+    system(("mkdir -p \"" + name + "\"").c_str());
+    #endif
 }
 
 //  Convert number to string with always 3 digits (even if leading zeroes)
@@ -306,9 +310,9 @@ int main(int argc, char *const argv[])
 
 			printf("Song %u\n", i);
 
-// 			printf("DEBUG: Going to call system(%s)\n", seq_rip_cmd.c_str());
-            int result = system(seq_rip_cmd.c_str());
-			if (result != 0) printf("An error has occured while calling song_ripper. Error code: %x\n", result);
+            printf("DEBUG: Going to call system(%s)\n", seq_rip_cmd.c_str());
+            size_t result = system(seq_rip_cmd.c_str());
+			if (result == 0) puts("An error occurred while calling song_ripper.");
 		}
 	}
 	delete[] sound_bank_index_list;

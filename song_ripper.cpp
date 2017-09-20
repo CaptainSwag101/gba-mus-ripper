@@ -14,7 +14,6 @@
 #include <cstring>
 
 class Note;
-// Global variables for this program
 
 static uint32_t track_ptr[16];
 static uint8_t last_cmd[16];
@@ -58,8 +57,8 @@ static void print_instructions()
 {
 	puts(
 		"Rips sequence data from a GBA game using Sappy sound engine to MIDI (.mid) format.\n"
-		"\nUsage : song_riper infile.gba outfile.mid song_address [-b1 -gm -gs -xg]\n"
-		"-b : Bank : forces all patches to be in the specified bank (0-127).\n"
+		"\nUsage: song_riper infile.gba outfile.mid song_address [-b1 -gm -gs -xg]\n"
+		"-b : Bank: forces all patches to be in the specified bank (0-127).\n"
 		"In General MIDI, channel 10 is reserved for drums.\n"
 		"Unfortunately, we do not want to use any \"drums\" in the output file.\n"
 		"I have 3 modes to fix this problem.\n"
@@ -112,7 +111,7 @@ static void stop_lfo(int track)
 	// Cancel a LFO if it was playing,
 	if(sv && lfo_flag[track])
 	{
-		if(lfo_type[track]==0)
+		if(lfo_type[track] == 0)
 			midi.add_controller(track, 1, 0);
 		else
 			midi.add_chanaft(track, 0);
@@ -143,7 +142,7 @@ class Note
 		{
 			midi.add_note_off(chn, key, vel);
 			stop_lfo(chn);
-			simultaneous_notes_ctr --;
+			simultaneous_notes_ctr--;
 			return true;
 		}
 		else
@@ -185,7 +184,7 @@ static bool tick(int track_amnt)
 	notes_playing.remove_if(countdown_is_over);
 
 	// Process all tracks
-	for(int track = 0; track<track_amnt; track++)
+	for(int track = 0; track < track_amnt; track++)
 	{
 		counter[track]--;
 		// Process events until counter non-null or pointer null
@@ -200,7 +199,7 @@ static bool tick(int track_amnt)
 		}
 	}
 
-	for(int track = 0; track<track_amnt; track++)
+	for(int track = 0; track < track_amnt; track++)
 	{
 		process_lfo(track);
 	}
@@ -306,7 +305,7 @@ static void process_event(int track)
 	// Tempo change
 	else if(command == 0xbb)
 	{
-		int tempo = 2*fgetc(inGBA);
+		int tempo = 2 * fgetc(inGBA);
 		track_ptr[track]++;
 		midi.add_tempo(tempo);
 		return;
@@ -372,12 +371,12 @@ static void process_event(int track)
 	switch(command)
 	{
 		// Key shift
-		case 0xbc :
+		case 0xbc:
 			key_shift[track] = arg1;
 			return;
 
 		// Set instrument
-		case 0xbd :
+		case 0xbd:
 			if(bank_used)
 			{
 				if(!xg)
@@ -392,24 +391,24 @@ static void process_event(int track)
 			return;
 
 		// Set volume
-		case 0xbe :
+		case 0xbe:
 		{	// Linearise volume if needed
 			int volume = lv ? (int)sqrt(127.0 * arg1) : arg1;
 			midi.add_controller(track, 7, volume);
 		}	return;
 
 		// Set panning
-		case 0xbf :
+		case 0xbf:
 			midi.add_controller(track, 10, arg1);
 			return;
 
 		// Pitch bend
-		case 0xc0 :
+		case 0xc0:
 			midi.add_pitch_bend(track, (char)arg1);
 			return;
 
 		// Pitch bend range
-		case 0xc1 :
+		case 0xc1:
 			if(sv)
 				midi.add_RPN(track, 0, (char)arg1);
 			else
@@ -417,7 +416,7 @@ static void process_event(int track)
 			return;
 
 		// LFO Speed
-		case 0xc2 :
+		case 0xc2:
 			if(sv)
 				midi.add_NRPN(track, 136, (char)arg1);
 			else
@@ -425,7 +424,7 @@ static void process_event(int track)
 			return;
 
 		// LFO delay
-		case 0xc3 :
+		case 0xc3:
 			if(sv)
 				lfo_delay[track] = arg1;
 			else
@@ -433,7 +432,7 @@ static void process_event(int track)
 			return;
 
 		// LFO depth
-		case 0xc4 :
+		case 0xc4:
 			if(sv)
 			{
 				if(lfo_delay[track] == 0 && lfo_hack[track])
@@ -455,7 +454,7 @@ static void process_event(int track)
 			return;
 
 		// LFO type
-		case 0xc5 :
+		case 0xc5:
 			if(sv)
 				lfo_type[track] = arg1;
 			else
@@ -463,7 +462,7 @@ static void process_event(int track)
 			return;
 
 		// Detune
-		case 0xc8 :
+		case 0xc8:
 			if(sv)
 				midi.add_RPN(track, 1, (char)arg1);
 			else
@@ -471,7 +470,7 @@ static void process_event(int track)
 			return;
 
 		// Key off
-		case 0xce :
+		case 0xce:
 		{
 			int key, vel = 0;
 
@@ -494,7 +493,7 @@ static void process_event(int track)
 		}	return;
 
 		// Key on
-		case 0xcf :
+		case 0xcf:
 		{
 			int key, vel;
 			// Is arg1 a key value ?
@@ -547,25 +546,25 @@ static uint32_t parseArguments(const int argv, const char *const args[])
 		exit(0);
 	}
 
-	for(int i=3; i<argv; i++)
+	for(int i = 3; i < argv; i++)
 	{
 		if(args[i][0] == '-')
 		{
 			if(args[i][1] == 'b')
 			{
-				if(strlen(args[i]) <3) print_instructions();
-				bank_number = atoi(args[i]+2);
+				if(strlen(args[i]) < 3) print_instructions();
+				bank_number = atoi(args[i] + 2);
 				bank_used = true;
 			}
-			else if(args[i][1]=='r' && args[i][2]=='c')
+			else if(args[i][1] == 'r' && args[i][2] == 'c')
 				rc = true;
-			else if(args[i][1]=='g' && args[i][2]=='s')
+			else if(args[i][1] == 'g' && args[i][2] == 's')
 				gs = true;
-			else if(args[i][1]=='x' && args[i][2]=='g')
+			else if(args[i][1] == 'x' && args[i][2] == 'g')
 				xg = true;
-			else if(args[i][1]=='l' && args[i][2]=='v')
+			else if(args[i][1] == 'l' && args[i][2] == 'v')
 				lv = true;
-			else if(args[i][1]=='s' && args[i][2]=='v')
+			else if(args[i][1] == 's' && args[i][2] == 'v')
 				sv = true;
 			else
 				print_instructions();
@@ -581,7 +580,7 @@ int main(int argc, char *argv[])
 {
 	FILE *outMID;
 	puts("GBA ROM sequence ripper (c) 2012 Bregalad");
-	uint32_t base_address = parseArguments(argc-1, argv+1);
+	uint32_t base_address = parseArguments(argc - 1, argv + 1);
 
 	if(fseek(inGBA, base_address, SEEK_SET))
 	{
@@ -611,7 +610,7 @@ int main(int argc, char *argv[])
 	if(rc)
 	{	// Make the drum channel last in the list, hopefully reducing the risk of it being used
 		midi.chn_reorder[9] = 15;
-		for(unsigned int j=10; j < 16; ++j)
+		for(unsigned int j = 10; j < 16; ++j)
 			midi.chn_reorder[j] = j-1;
 	}
 
@@ -639,7 +638,7 @@ int main(int argc, char *argv[])
 	int instr_bank_address = get_GBA_pointer();
 
 	// Read table of pointers
-	for(int i=0; i<track_amnt; i++)
+	for(int i = 0; i < track_amnt; i++)
 	{
 		track_ptr[i] = get_GBA_pointer();
 
@@ -648,7 +647,7 @@ int main(int argc, char *argv[])
 		lfo_flag[i] = false;
 
 		if(reverb < 0)  // add reverb controller on all tracks
-			midi.add_controller(i, 91, lv ? (int)sqrt((reverb&0x7f)*127.0) : reverb&0x7f);
+			midi.add_controller(i, 91, lv ? (int)sqrt((reverb & 0x7f) * 127.0) : reverb & 0x7f);
 	}
 
 	// Search for loop address of track #0
@@ -659,7 +658,7 @@ int main(int argc, char *argv[])
 		fseek(inGBA, base_address - 9, SEEK_SET);
 
 	// Read where in track 1 the loop starts
-	for(int i=0; i<5; i++)
+	for(int i = 0; i < 5; i++)
 		if(fgetc(inGBA) == 0xb2)
 		{
 			loop_flag = true;
