@@ -1,12 +1,11 @@
 /*
  * Sound Font Samples class
- * 
+ *
  * This program is part of GBA SoundFontRiper (c) 2012 by Bregalad
  * This is free and open source software.
  */
 
-#ifndef GBA_SAMPLES_HPP
-#define GBA_SAMPLES_HPP
+#pragma once
 
 #include "sf2.hpp"
 #include <vector>
@@ -30,5 +29,3 @@ public:
 	// Convert a Game Boy noise (channel 4) sample
 	int build_noise_sample(bool metallic, int key);
 };
-
-#endif

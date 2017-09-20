@@ -1,21 +1,21 @@
 /**
  * Sound Font main class
- * 
+ *
  * This is part of the GBA SoundFont Ripper (c) 2012 by Bregalad
  * This is free and open source software.
- * 
- * Notes : I tried to separate the GBA-related stuff and SF2 related stuff as much as possible in different classes
+ *
+ * Notes: I tried to separate the GBA-related stuff and SF2 related stuff as much as possible in different classes
  * that way anyone can re-use this program for building SF2s out of different data.
- * 
+ *
  * SF2 is a SoundFont file format. This class (and related classes) serves to create data to build
  * a SF2 file. For more details look at the doccument "Sound Font(R) Technical Doccumentation" version 2.01
  * which was used as a reference when writing these classes.
  * By the way I must tell this format is incredibly stupid and complex as opposed to what it could be and
  * I have no idea why people started to adopt this standard. But anyways they did...
- * 
+ *
  * All SF2-related classes contains a field named sf2 that links to the SF2 main class to know which
  * SF2 file they relates to. (this would make it possible to build multiple SF2 files at a time).
- * 
+ *
  * The building of a SF2 file is done in multiple passes :
  * - Creating samples
  * - Creating instruments
@@ -23,8 +23,8 @@
  * - Output to the target file
  */
 
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 #include "sf2.hpp"
 #include "sf2_chunks.hpp"
 #include "gba_samples.hpp"

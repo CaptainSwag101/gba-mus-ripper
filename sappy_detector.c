@@ -104,7 +104,7 @@ static uint32_t gba_address_to_offset(uint32_t address)
 {
 	if (!is_gba_rom_address(address))
 	{
-		fprintf(stderr, "Warning: the address $%08X is not ROM address\n", address);
+		fprintf(stderr, "Warning: the address $%08X is not a valid ROM address.\n", address);
 	}
 	return address & 0x01FFFFFF;
 }
@@ -256,11 +256,11 @@ static bool test_pointer_validity(uint32_t *data, uint32_t inGBA_length)
 
 int main(const int argc, string argv[])
 {
-	if(argc != 2) print_instructions();
+	if (argc != 2) print_instructions();
 	puts("Sappy sound engine detector (c) 2015 by Bregalad and loveemu\n");
 
 	FILE *inGBA = fopen(argv[1], "rb");
-	if(!inGBA)
+	if (!inGBA)
 	{
 		fprintf(stderr, "Error: File %s can't be opened for reading.\n", argv[1]);
 		exit(0);
@@ -271,7 +271,7 @@ int main(const int argc, string argv[])
 	const size_t inGBA_length = ftell(inGBA);
 
 	uint8_t *inGBA_dump = (uint8_t*)malloc(inGBA_length);
-	if(!inGBA_dump)
+	if (!inGBA_dump)
 	{
 		fprintf(stderr, "Error: Can't allocate memory for ROM dump.\n");
 		exit(0);
@@ -279,16 +279,16 @@ int main(const int argc, string argv[])
 
 	fseek(inGBA, 0L, SEEK_SET);
 	size_t errcode = fread(inGBA_dump, 1, inGBA_length, inGBA);
-	if(errcode != inGBA_length)
+	if (errcode != inGBA_length)
 	{
-		fprintf(stderr, "Error: Can't dump ROM file. %x\n", errcode);
+		fprintf(stderr, "Error: Can't dump ROM file. %lu\n", errcode);
 		exit(0);
 	}
 	fclose(inGBA);
 
 	int32_t offset = m4a_searchblock(inGBA_dump, inGBA_length);
 
-	if(offset < 0)
+	if (offset < 0)
 	{
 		/* If no address were told manually and nothing was detected.... */
 		puts("No sound engine was found.");
@@ -301,7 +301,7 @@ int main(const int argc, string argv[])
 	bool valid_m32 = test_pointer_validity((uint32_t*)(inGBA_dump + offset - 32), inGBA_length);	// For pokémon
 
 	/* If neither is found there is an error */
-	if(!valid_m16 && !valid_m32)
+	if (!valid_m16 && !valid_m32)
 	{
 		puts("Only a partial sound engine was found.");
 		exit(0);

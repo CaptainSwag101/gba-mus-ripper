@@ -1,7 +1,6 @@
-#ifndef MIDI_HPP
-#define MIDI_HPP
+#pragma once
 
-#include <stdio.h>
+#include <cstdio>
 #include <cstdint>
 #include <vector>
 
@@ -39,7 +38,7 @@ class MIDI
 	void add_event(MIDIEventType type, int chn, char param1);
 
 public:
-	char chn_reorder[16];			// User can change the order of the channels
+	char chn_reorder[16];				// User can change the order of the channels
 
 	MIDI(uint16_t delta_time);			// Construct a MIDI object
 	void write(FILE*);					// Write cached data to midi file
@@ -74,5 +73,3 @@ public:
 	void add_sysex(const char sysex_data[], size_t len);
 	void add_tempo(double tempo);
 };
-
-#endif

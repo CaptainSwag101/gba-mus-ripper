@@ -1,14 +1,13 @@
 /*
  * Sound Font Instruments class
- * 
+ *
  * This program is part of GBA SoundFontRiper (c) 2012, 2014 by Bregalad
  * This is free and open source software.
  */
 
-#ifndef GBA_INST_HPP
-#define GBA_INST_HPP
+#pragma once
 
-#include <stdint.h>
+#include <cstdint>
 #include <map>
 #include "sf2.hpp"
 #include "gba_samples.hpp"
@@ -28,7 +27,7 @@ class GBAInstr
 	std::map<inst_data, int> inst_map;	// Contains pointers to instruments within GBA file, their position is the # of instrument in the SF2
 	SF2 *sf2;										// Related .sf2 file
 	GBASamples samples;								// Related samples class
-	
+
 	// Convert pointer from GBA memory map to ROM memory map
 	uint32_t get_GBA_pointer();
 	// Apply ADSR envelope on the instrument
@@ -57,4 +56,3 @@ public:
 	//Build GameBoy white noise instrument
 	int build_noise_instrument(const inst_data inst);
 };
-#endif

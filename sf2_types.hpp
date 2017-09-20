@@ -1,14 +1,13 @@
 /*
- * This file is part of GBA Sound Riper
+ * This file is part of GBA Sound Ripper
  * (c) 2012, 2014 Bregalad
  * This is free and open source software
  *
  * This class defines types closely related to SF2 specification
  */
 
-#ifndef SF2_TYPES_HPP
-#define SF2_TYPES_HPP
-#include <stdint.h>
+#pragma once
+#include <cstdint>
 
 /* From the SF2 spec v2.1, page 7 */
 // typedef uint8_t BYTE;
@@ -132,4 +131,3 @@ enum class SFTransform : uint16_t
 	concave = 1,
 	convex = 2
 };
-#endif

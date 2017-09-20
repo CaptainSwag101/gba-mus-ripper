@@ -1,29 +1,29 @@
 /**
  * Sound Font chunk classes
- * 
- * This is part of the GBA SoundFont Riper (c) 2012 by Bregalad
+ *
+ * This is part of the GBA SoundFont Ripper (c) 2012 by Bregalad
  * This is free and open source software.
- * 
+ *
  * Notes : I tried to separate the GBA-related stuff and SF2 related stuff as much as possible in different classes
  * that way anyone can re-use this program for building SF2s out of different data.
- * 
+ *
  * SF2 is a SoundFont file format. This class (and related classes) serves to create data to build
  * a SF2 file. For more details look at the document "Sound Font(R) Technical Documentation" version 2.01
  * which was used as a reference when writing these classes.
  * By the way I must tell this format is incredibly stupid and complex as opposed to what it could be and
  * I have no idea why people started to adopt this standard. But anyways they did...
- * 
+ *
  * This file contains classes for all chunks and subchunks present in a SF2 file
- * 
+ *
  * All SF2-related classes contains a field named sf2 that links to the SF2 main class to know which
  * SF2 file they relates to. (this would make it possible to build multiple SF2 files at a time).
- * 
+ *
  * Note : These classes helps in the complex process of building a SF2 and make it much more simpler and automated.
  * Not all of SF2's features are supported, support for ROM samples, stereo samples and modulators is
  * incomplete Yet those classes contains nothing GBA-related and could easily be re-used in another project as-it.
- * 
+ *
  * There is basically 2 ways to adds data, such as a new sample, new instrument of new preset.
- * 
+ *
  * The first way is to make it all automatically by using the add_new_xxx() functions. It's recommended to do
  * it this way whenever possible HOWEVER to have a file which is structurally correct it is imperative to
  * add them in this order :
@@ -33,17 +33,17 @@
  * 4) Bag 2 (optional)
  * 5) Modulators and generators for Bag2 (optional)
  * etc...
- * 
+ *
  * The second way is to create moderators, generators and bag directly using their respective classes. That way
  * they can be created in any order, but it's important they are created in a first step, and added in a second step
  * in the order they should be in the final file.
  */
-#ifndef SF2_CHUNKS_HPP
-#define SF2_CHUNKS_HPP
 
-#include <stdio.h>
-#include <string.h>
-#include <stdint.h>
+#pragma once
+
+#include <cstdio>
+#include <cstring>
+#include <cstdint>
 #include "sf2.hpp"
 #include "sf2_types.hpp"
 #include <vector>
@@ -66,7 +66,7 @@ protected:
 		size(size),			// The chunk starts bank
 		sf2(sf2)			// Link to output SF2 file
 	{
-		for(unsigned int i=0; i < 4; ++i)
+		for (unsigned int i=0; i < 4; ++i)
 			SF2Chunks::name[i] = name[i];
 	}
 
@@ -116,11 +116,11 @@ class sfBag
 	uint16_t wModNdx;			// Index to list of modulators
 	SF2 *sf2;
 public:
-	// Automatically assign indexes 
+	// Automatically assign indexes
 	sfBag(SF2 *sf2, bool preset) :
 		sf2(sf2)
 	{
-		if(preset)
+		if (preset)
 		{
 			wGenNdx = sf2->get_pgen_size();
 			wModNdx = sf2->get_pmod_size();
@@ -168,7 +168,7 @@ public:
 class sfGenList
 {
 	SFGenerator sfGenOper;
-	genAmountType genAmount; 
+	genAmountType genAmount;
 	SF2 *sf2;
 public:
 	sfGenList(SF2 *sf2) :
@@ -322,7 +322,7 @@ public:
 		// 2 bytes per sample
 		// Compute size including the 8 samples after loop point
 		// and 46 dummy samples
-		if(loop_flag)
+		if (loop_flag)
 			SF2Chunks::size += (size + 8 + 46) * 2;
 		else
 			SF2Chunks::size += (size + 46) * 2;
@@ -335,7 +335,7 @@ public:
 	{
 		SF2Chunks::write();
 
-		for(unsigned int i=0; i<file_list.size(); i++)
+		for (unsigned int i=0; i<file_list.size(); i++)
 		{
 			// Seek at the start of the sample in input file
 			fseek(file_list[i], pointer_list[i], SEEK_SET);
@@ -351,7 +351,7 @@ public:
 					uint8_t *data = new uint8_t[size_list[i]];
 					fread(data, 1, size_list[i], file_list[i]);
 					// Convert to signed 16 bits
-					for(unsigned int j=0; j < size_list[i]; j++)
+					for (unsigned int j=0; j < size_list[i]; j++)
 						outbuf[j] = (data[j] - 0x80) << 8;
 					delete[] data;
 				}	break;
@@ -362,7 +362,7 @@ public:
 					int8_t *data = new int8_t[size_list[i]];
 					fread(data, 1, size_list[i], file_list[i]);
 
-					for(unsigned int j=0; j < size_list[i]; j++)
+					for (unsigned int j=0; j < size_list[i]; j++)
 						outbuf[j] = data[j] << 8;
 					delete[] data;
 				}	break;
@@ -371,7 +371,7 @@ public:
 					// Just read raw data, no conversion needed
 					fread(outbuf, 2, size_list[i], file_list[i]);
 					break;
-				
+
 				case GAMEBOY_CH3:
 				{
 					// Conversion lookup table
@@ -386,16 +386,16 @@ public:
 					uint8_t data[16];
 					fread(data, 1, 16, file_list[i]);
 
-					for(int j=0, l=0; j<16; j++)
+					for (int j=0, l=0; j<16; j++)
 					{
-						for(int k=num_of_repts; k!=0; k--, l++)
+						for (int k=num_of_repts; k!=0; k--, l++)
 							outbuf[l] = conv_tbl[data[j]>>4];
-	
-						for(int k=num_of_repts; k!=0; k--, l++)
+
+						for (int k=num_of_repts; k!=0; k--, l++)
 							outbuf[l] = conv_tbl[data[j]&0xf];
 					}
 				}	break;
-				
+
 				case BDPCM:
 				{
 					static const int8_t delta_lut[] = {0, 1, 4, 9, 16, 25, 36, 49, -64, -49, -36, -25, -16, -9, -4, -1};
@@ -408,7 +408,7 @@ public:
 					 *
 					 * Decoding works like this:
 					 * The initial byte can be directly read without decoding. Then each
-					 * next sample can be decoded by putting the nibble into the delta-lookup-table 
+					 * next sample can be decoded by putting the nibble into the delta-lookup-table
 					 * and adding that value to the previously calculated sample
 					 * until the end of the block is reached.
 					 */
@@ -418,7 +418,7 @@ public:
 					char (*data)[33] = new char[nblocks][33];
 					fread(data, 33, nblocks, file_list[i]);
 
-					for(unsigned int block=0; block < nblocks; ++block)
+					for (unsigned int block=0; block < nblocks; ++block)
 					{
 						int8_t sample = data[block][0];
 						outbuf[64*block] = sample << 8;
@@ -444,12 +444,12 @@ public:
 
 			// If loop enabled, write 8 samples after loop point
 			// (required by the dumb SF2 standard)
-			if(loop_flag_list[i])
+			if (loop_flag_list[i])
 				fwrite(outbuf + loop_pos_list[i], 2, 8, sf2->out);
 
 			// Write 46 dummy zeroed samples at the end
 			// which is also required by the very dumb SF2 standard
-			for(int j = 0; j < 2*46; j++)
+			for (int j = 0; j < 2*46; j++)
 				putc(0x00, sf2->out);
 
 			delete[] outbuf;
@@ -478,7 +478,7 @@ public:
 		SF2Chunks::write();
 
 		// Call the write function for all elements of the list
-		for(unsigned int i=0; i<preset_list.size(); i++)
+		for (unsigned int i=0; i<preset_list.size(); i++)
 			preset_list[i].write();
 	}
 };
@@ -503,7 +503,7 @@ public:
 	{
 		SF2Chunks::write();
 
-		for(unsigned int i=0; i<instrument_list.size(); i++)
+		for (unsigned int i=0; i<instrument_list.size(); i++)
 			instrument_list[i].write();
 	}
 };
@@ -532,7 +532,7 @@ public:
 		SF2Chunks::write();
 
 		// Call the write function for all elements of the list
-		for(unsigned int i=0; i<bag_list.size(); i++)
+		for (unsigned int i=0; i<bag_list.size(); i++)
 			bag_list[i].write();
 	}
 };
@@ -548,7 +548,7 @@ public:
 	MODSubChunk (SF2 *sf2, bool preset) :
 		SF2Chunks(sf2, preset ? "pmod" : "imod")
 	{
-		// if(preset)
+		// if (preset)
 			// name = "pmod";
 		// else
 			// name = "imod";
@@ -565,7 +565,7 @@ public:
 	{
 		SF2Chunks::write();
 
-		for(unsigned int i=0; i<modulator_list.size(); i++)
+		for (unsigned int i=0; i<modulator_list.size(); i++)
 			modulator_list[i].write();
 	}
 };
@@ -581,7 +581,7 @@ public:
 	GENSubChunk (SF2 *sf2, bool preset) :
 		SF2Chunks(sf2, preset ? "pgen" : "igen")
 	{
-		// if(preset)
+		// if (preset)
 			// name = "pgen";
 		// else
 			// name = "igen";
@@ -598,7 +598,7 @@ public:
 	{
 		SF2Chunks::write();
 
-		for(unsigned int i=0; i<generator_list.size(); i++)
+		for (unsigned int i=0; i<generator_list.size(); i++)
 			generator_list[i].write();
 	}
 };
@@ -623,7 +623,7 @@ public:
 	{
 		SF2Chunks::write();
 
-		for(unsigned int i=0; i<sample_list.size(); i++)
+		for (unsigned int i=0; i<sample_list.size(); i++)
 			sample_list[i].write();
 	}
 };
@@ -793,5 +793,3 @@ public:
 		shdr_subchunk.write();
 	}
 };
-
-#endif

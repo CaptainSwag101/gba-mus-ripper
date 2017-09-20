@@ -1,8 +1,7 @@
-#ifndef SF2_HPP
-#define SF2_HPP
+#pragma once
 
-#include <stdio.h>
-#include <stdint.h>
+#include <cstdio>
+#include <cstdint>
 #include "sf2_types.hpp"
 
 class InfoListChunk;
@@ -79,5 +78,3 @@ public:
 	uint16_t get_pgen_size();
 	uint16_t get_pmod_size();
 };
-
-#endif

@@ -1,38 +1,38 @@
 /**
  * Standard MIDI File main class
- * 
+ *
  * This is part of the GBA SongRiper (c) 2012 by Bregalad
  * This is free and open source software.
- * 
+ *
  * Notes : I tried to separate the GBA-related stuff and MIDI related stuff as much as possible in different classes
  * that way anyone can re-use this program for building MIDIs out of different data.
- * 
+ *
  * SMF is a sequenced music file format based on MIDI interface. This class (and related classes) serves to create
  * data to build a format 0 MIDI file. I restricted it to format 0 MIDIS because it was simpler to only have one
  * single track to deal with. It wouldn't be too hard to upgrade this class to support format 1 MIDIs, though.
- * 
+ *
  * All MIDI classes contains a field named midi that links to the MIDI main class to know which
  * MIDI file they relates to. (this would make it possible to build multiple SF2 files at a time).
  * Adding MIDI events is made extremely simple by a set of functions in this class. However if this is not sufficient
  * it is always possible to use the general purpose add_event() function, or adding data bytes directly to output.
- * 
+ *
  * The MIDI standard uses the concept of delta_times before events. Since this is very much unpractical, this
  * class supposes the user to simply increment the time_ctr variable when needed, and not worry about delta
  * time values anmore.
- * 
+ *
  * The building of a MIDI file is done in two passes :
  * - Creating the sequence data which is cached in memory
  * - Writing sequence data from cache to output file
  */
 
-#include <string.h>
+#include <cstring>
 #include "midi.hpp"
 
 // Constructor : Initialise the MIDI object
 MIDI::MIDI(uint16_t delta_time)
 {
 	delta_time_per_beat = delta_time;
-	for(int i=15; i >= 0; --i)
+	for (int i=15; i >= 0; --i)
 	{
 		last_rpn_type[i] = -1;
 		last_nrpn_type[i] = -1;
@@ -104,7 +104,7 @@ void MIDI::add_vlength_code(int code)
 	char word3 = (code >> 14) & 0x7f;
 	char word4 = (code >> 21) & 0x7f;
 
-	if(word4 != 0)
+	if (word4 != 0)
 	{
 		data.push_back(word4 | 0x80);
 		data.push_back(word3 | 0x80);
@@ -133,7 +133,7 @@ void MIDI::add_delta_time()
 void MIDI::add_event(MIDIEventType type, int chn, char param1, char param2)
 {
 	add_delta_time();
-	if(chn != last_chanel || type != last_event_type)
+	if (chn != last_chanel || type != last_event_type)
 	{
 		last_chanel = chn;
 		last_event_type = type;
@@ -146,7 +146,7 @@ void MIDI::add_event(MIDIEventType type, int chn, char param1, char param2)
 void MIDI::add_event(MIDIEventType type, int chn, char param)
 {
 	add_delta_time();
-	if(chn != last_chanel || type != last_event_type)
+	if (chn != last_chanel || type != last_event_type)
 	{
 		last_chanel = chn;
 		last_event_type = type;
@@ -202,7 +202,7 @@ void MIDI::add_pitch_bend(int chn, char value)
 //Add RPN event
 void MIDI::add_RPN(int chn, int16_t type, int16_t value)
 {
-	if(last_rpn_type[chn] != type || last_type[chn] != 0)
+	if (last_rpn_type[chn] != type || last_type[chn] != 0)
 	{
 		last_rpn_type[chn] = type;
 		last_type[chn] = 0;
@@ -211,14 +211,14 @@ void MIDI::add_RPN(int chn, int16_t type, int16_t value)
 	}
 	add_event(CONTROLLER, chn, 6, value >> 7);
 
-	if((value & 0x7f) != 0)
+	if ((value & 0x7f) != 0)
 		add_event(CONTROLLER, chn, 38, value & 0x7f);
 }
 
 //Add NRPN event
 void MIDI::add_NRPN(int chn, int16_t type, int16_t value)
 {
-	if(last_nrpn_type[chn] != type || last_type[chn] != 1)
+	if (last_nrpn_type[chn] != type || last_type[chn] != 1)
 	{
 		last_nrpn_type[chn] = type;
 		last_type[chn] = 1;
@@ -226,7 +226,7 @@ void MIDI::add_NRPN(int chn, int16_t type, int16_t value)
 		add_event(CONTROLLER, chn, 98, type&0x7f);
 	}
 	add_event(CONTROLLER, chn, 6, value >> 7);
-	if((value & 0x7f) != 0)
+	if ((value & 0x7f) != 0)
 		add_event(CONTROLLER, chn, 38, value & 0x7f);
 }
 
@@ -248,7 +248,7 @@ void MIDI::add_sysex(const char sysex_data[], size_t len)
 	data.push_back(0xf0);
 	//Actually variable length code
 	add_vlength_code(len + 1);
-	
+
 	data.insert(data.end(), sysex_data, sysex_data+len);
 	data.push_back(0xf7);
 }

@@ -228,7 +228,7 @@ int main(int argc, char *const argv[])
 	// Ignores entries which are made of 0s at the start of the song table
 	// this fix was necessarily for the game Fire Emblem
 	uint32_t song_pointer;
-	while(true)
+	while (true)
 	{
 		fread(&song_pointer, 4, 1, inGBA);
 		if (song_pointer != 0) break;
@@ -236,7 +236,7 @@ int main(int argc, char *const argv[])
 	}
 
 	unsigned int i = 0;
-	while(true)
+	while (true)
 	{
 		song_pointer -= 0x8000000;		// Adjust pointer
 
@@ -310,9 +310,8 @@ int main(int argc, char *const argv[])
 
 			printf("Song %u\n", i);
 
-            printf("DEBUG: Going to call system(%s)\n", seq_rip_cmd.c_str());
-            size_t result = system(seq_rip_cmd.c_str());
-			if (result == 0) puts("An error occurred while calling song_ripper.");
+			//printf("DEBUG: Going to call system(%s)\n", seq_rip_cmd.c_str());
+			if (!system(seq_rip_cmd.c_str())) puts("An error occurred while calling song_ripper.");
 		}
 	}
 	delete[] sound_bank_index_list;
