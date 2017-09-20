@@ -49,7 +49,7 @@ static void print_instructions()
 		"-xg  : Output MIDI will be compliant to XG standard (instead of default GS standard).\n"
 		"-sb  : Separate banks. Every sound bank is riper to a different .sf2 file and placed into different sub-folders (instead of doing it in a single .sf2 file and a single folder).\n"
 		"-raw : Output MIDIs exactly as they're encoded in ROM, without linearise volume and velocities and without simulating vibratos.\n"
-		"-adr : Force adress of the song table manually. This is required for manually dumping music data from ROMs where the location can't be detected automatically.\n"
+		"[address]: Force adress of the song table manually. This is required for manually dumping music data from ROMs where the location can't be detected automatically.\n"
 	);
 	exit(0);
 }
@@ -136,13 +136,13 @@ static void parse_args(const int argc, char *const args[])
 		}
 		else
 		{
-			fprintf(stderr, "Error: Don't know what to do with %s. Try with -help to get more information.\n", args[i]);
+			fprintf(stderr, "Error: Don't know what to do with %s. Try with --help to get more information.\n", args[i]);
 			exit(-1);
 		}
 	}
 	if (!path_found)
 	{
-		fputs("Error: No input GBA file. Try with -help to get more information.\n", stderr);
+		fputs("Error: No input GBA file. Try with --help to get more information.\n", stderr);
 		exit(-1);
 	}
 }
@@ -282,7 +282,7 @@ int main(int argc, char *const argv[])
 		}
 	}
 
-	for (i=0; i < song_list.size(); i++)
+	for (i = 0; i < song_list.size(); i++)
 	{
 		if (song_list[i] != song_tbl_end_ptr)
 		{
@@ -307,7 +307,8 @@ int main(int argc, char *const argv[])
 			printf("Song %u\n", i);
 
 // 			printf("DEBUG: Going to call system(%s)\n", seq_rip_cmd.c_str());
-			if (!system(seq_rip_cmd.c_str())) puts("An error has occured.");
+            int result = system(seq_rip_cmd.c_str());
+			if (result != 0) printf("An error has occured while calling song_ripper. Error code: %x\n", result);
 		}
 	}
 	delete[] sound_bank_index_list;
