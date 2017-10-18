@@ -11,7 +11,7 @@ FLAGS=-Wall -fdata-sections -ffunction-sections -fmax-errors=5 -Os
 # Additional parameters used for linking whole programs
 WHOLE=-s -fwhole-program -static
 
-all: $(shell mkdir -p build) $(shell mkdir -p out) out/sappy_detector out/song_ripper out/sound_font_ripper out/gba_mus_ripper
+all: $(shell mkdir build) $(shell mkdir out) out/sappy_detector out/song_ripper out/sound_font_ripper out/gba_mus_ripper
 
 out/sappy_detector: sappy_detector.c
 	$(CC) $(FLAGS) $(WHOLE) sappy_detector.c -o out/sappy_detector

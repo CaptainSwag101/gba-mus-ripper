@@ -572,7 +572,7 @@ static uint32_t parseArguments(const int argv, const char *const args[])
 		else
 			print_instructions();
 	}
-	// Return base adress, parsed correctly in both decimal and hex
+	// Return base address, parsed correctly in both decimal and hex
 	return strtoul(args[2], 0, 0);
 }
 
