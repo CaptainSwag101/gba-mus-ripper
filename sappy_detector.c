@@ -40,6 +40,15 @@ static uint8_t m4a_bin_selectsong[0x1E] =
 	0x01, 0x68, 0x10, 0x1C, 0x00, 0xF0,
 };
 
+// we need to check 2 tables because the m4a library was recompiled for some games.
+static uint8_t m4a_bin_selectsong_new[0x1E] =
+{
+	0x00, 0xB5, 0x00, 0x04, 0x07, 0x4B, 0x08, 0x49,
+	0x40, 0x0B, 0x40, 0x18, 0x82, 0x88, 0x51, 0x00,
+	0x89, 0x18, 0x89, 0x00, 0xC9, 0x18, 0x0A, 0x68,
+	0x01, 0x68, 0x10, 0x1C, 0x00, 0xF0,
+};
+
 #define M4A_MAIN_PATT_COUNT 1
 #define M4A_MAIN_LEN 2
 static uint8_t m4a_bin_main[M4A_MAIN_PATT_COUNT][M4A_MAIN_LEN] =
@@ -97,7 +106,7 @@ static bool is_valid_offset(uint32_t offset, uint32_t romsize)
 static bool is_gba_rom_address(uint32_t address)
 {
 	uint8_t region = (address >> 24) & 0xFE;
-	return (region == 8);
+	return (region == 8 || region == 9);
 }
 
 static uint32_t gba_address_to_offset(uint32_t address)
@@ -120,6 +129,13 @@ static long m4a_searchblock(uint8_t *gbarom, size_t gbasize)
 	while (m4a_selectsong_search_offset != -1)
 	{
 		m4a_selectsong_offset = memsearch(gbarom, gbasize, m4a_bin_selectsong, sizeof(m4a_bin_selectsong), m4a_selectsong_search_offset, 1, 0);
+
+		if (m4a_selectsong_offset == -1)
+		{
+			// we didn't find the first library, so attempt to find the newer m4a library.
+			m4a_selectsong_offset = memsearch(gbarom, gbasize, m4a_bin_selectsong_new, sizeof(m4a_bin_selectsong_new), m4a_selectsong_search_offset, 1, 0);
+		}
+
 		if (m4a_selectsong_offset != -1)
 		{
 #ifdef _DEBUG

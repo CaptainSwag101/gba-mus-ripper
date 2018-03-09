@@ -1,5 +1,5 @@
 /**
- * GBAMusRipper (c) 2012-2015 Bregalad, (c) 2017 CaptainSwag101
+ * GBAMusRipper (c) 2012-2015 Bregalad, (c) 2017-2018 CaptainSwag101
  * This is free and open source software
  *
  * This program analyze a Game Boy Advance ROM and search for a sound engine
@@ -41,9 +41,9 @@ static const int sample_rates[] = {-1, 5734, 7884, 10512, 13379, 15768, 18157, 2
 static void print_instructions()
 {
 	puts(
-		"  /=====================================================================\\\n"
-		"-<   GBA Mus Ripper 3.2 (c) 2012-2015 Bregalad, (c) 2017 CaptainSwag101   >-\n"
-		"  \\=====================================================================/\n\n"
+		"  /==========================================================================\\\n"
+		"-<   GBA Mus Ripper 3.3 (c) 2012-2015 Bregalad, (c) 2017-2018 CaptainSwag101   >-\n"
+		"  \\==========================================================================/\n\n"
 		"Usage: gba_mus_ripper (input_file) [-o output_directory] [address] [flags]\n\n"
 		"-gm  : Give General MIDI names to presets. Note that this will only change the names and will NOT magically turn the soundfont into a General MIDI compliant soundfont.\n"
 		"-rc  : Rearrange channels in output MIDIs so channel 10 is avoided. Needed by sound cards where it's impossible to disable \"drums\" on channel 10 even with GS or XG commands.\n"
@@ -71,11 +71,13 @@ static void mkdir(std::string name)
     #endif
 }
 
-//  Convert number to string with always 3 digits (even if leading zeroes)
-static std::string dec3(unsigned int n)
+//  Convert number to string with always 4 digits (even if leading zeroes)
+//  Mother 3 is a game which needs the 4 digits.
+static std::string dec4(unsigned int n)
 {
 	std::string s;
-	s += "0123456789"[n / 100];
+	s += "0123456789"[n / 1000 % 10];
+	s += "0123456789"[n / 100 % 10];
 	s += "0123456789"[n / 10 % 10];
 	s += "0123456789"[n % 10];
 	return s;
@@ -287,7 +289,7 @@ int main(int argc, char *const argv[])
 		for (bank_t j = sound_bank_list.begin(); j != sound_bank_list.end(); ++j)
 		{
 			unsigned int d = std::distance(sound_bank_list.begin(), j);
-			std::string subdir = outPath + '/' + "soundbank_" + dec3(d);
+			std::string subdir = outPath + '/' + "soundbank_" + dec4(d);
 			mkdir(subdir);
 		}
 	}
@@ -300,8 +302,8 @@ int main(int argc, char *const argv[])
 			std::string seq_rip_cmd = prg_prefix + "song_ripper.exe \"" + inGBA_path + "\" \"" + outPath;
 
 			// Add leading zeroes to file name
-			if (sb) seq_rip_cmd += "/soundbank_" + dec3(bank_index);
-			seq_rip_cmd += "/song" + dec3(i) + ".mid\"";
+			if (sb) seq_rip_cmd += "/soundbank_" + dec4(bank_index);
+			seq_rip_cmd += "/song" + dec4(i) + ".mid\"";
 
 			seq_rip_cmd += " 0x" + hex(song_list[i]);
 			seq_rip_cmd += rc ? " -rc" : (xg ? " -xg": " -gs");
@@ -329,7 +331,7 @@ int main(int argc, char *const argv[])
 		{
 			unsigned int bank_index = distance(sound_bank_list.begin(), j);
 
-			std::string sbnumber = dec3(bank_index);
+			std::string sbnumber = dec4(bank_index);
 			std::string foldername = "soundbank_" + sbnumber;
 			std::string sf_rip_args = prg_prefix + "sound_font_ripper.exe \"" + inGBA_path + "\" \"" + outPath + '/';
 			sf_rip_args += foldername + '/' + foldername /* + "_@" + hex(*j) */ + ".sf2\"";
