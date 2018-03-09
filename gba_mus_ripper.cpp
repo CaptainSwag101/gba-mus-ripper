@@ -42,7 +42,7 @@ static void print_instructions()
 {
 	puts(
 		"  /==========================================================================\\\n"
-		"-<   GBA Mus Ripper 3.3 (c) 2012-2015 Bregalad, (c) 2017-2018 CaptainSwag101   >-\n"
+		"-<   GBA Mus Ripper 3.3 (c) 2012-2015 Bregalad, (c) 2017-2018 CaptainSwag101  >-\n"
 		"  \\==========================================================================/\n\n"
 		"Usage: gba_mus_ripper (input_file) [-o output_directory] [address] [flags]\n\n"
 		"-gm  : Give General MIDI names to presets. Note that this will only change the names and will NOT magically turn the soundfont into a General MIDI compliant soundfont.\n"
