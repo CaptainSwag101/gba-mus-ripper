@@ -194,3 +194,6 @@ Just a fixes of a few bugs with missing instruments. Pokémon, whose support was
 
 v2.4 april 2016
 A few bugfixes, BDPCM comrpessed samples are supported
+
+v3.3 march 2018
+Improve the detection of sappy engine by adding the 2nd definition for recompiled libraries (fixes MMBN6, Mother 3, etc)
