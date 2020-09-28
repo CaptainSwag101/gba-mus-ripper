@@ -162,6 +162,11 @@ int main(int argc, char *const argv[])
 {
 	// Parse arguments (without program name)
 	parse_args(argc - 1, argv + 1);
+	
+	if (outPath.size() == 0)
+	{
+		outPath = ".";
+	}
 
 	// Compute program prefix (should be "", "./", "../" or whathever)
 	std::string prg_name = argv[0];
