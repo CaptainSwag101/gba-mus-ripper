@@ -162,7 +162,7 @@ int main(int argc, char *const argv[])
 {
 	// Parse arguments (without program name)
 	parse_args(argc - 1, argv + 1);
-	
+
 	if (outPath.size() == 0)
 	{
 		outPath = ".";
@@ -170,7 +170,7 @@ int main(int argc, char *const argv[])
 
 	// Compute program prefix (should be "", "./", "../" or whathever)
 	std::string prg_name = argv[0];
-	std::string prg_prefix = prg_name.substr(0, prg_name.rfind("gba_mus_ripper.exe"));
+	std::string prg_prefix = prg_name.substr(0, prg_name.rfind("gba_mus_ripper"));
 
 	int sample_rate = 0, main_volume = 0;		// Use default values when those are '0'
 
