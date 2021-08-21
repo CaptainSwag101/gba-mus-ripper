@@ -22,6 +22,17 @@ namespace sappy_detector
 {
     #include "sappy_detector.c"             // The main::function is called directly on Linux
 }
+
+#define GBA_MUS_RIPPER_NAME "gba_mus_ripper"
+#define SONG_RIPPER_NAME "song_ripper"
+#define SOUND_FRONT_RIPPER_NAME "sound_font_ripper"
+
+#else
+
+#define GBA_MUS_RIPPER_NAME "gba_mus_ripper.exe"
+#define SONG_RIPPER_NAME "song_ripper.exe"
+#define SOUND_FRONT_RIPPER_NAME "sound_font_ripper.exe"
+
 #endif
 
 static FILE *inGBA;
@@ -163,7 +174,7 @@ int main(int argc, char *const argv[])
 {
 	// Parse arguments (without program name)
 	parse_args(argc - 1, argv + 1);
-	
+
 	if (outPath.size() == 0)
 	{
 		outPath = ".";
@@ -171,7 +182,7 @@ int main(int argc, char *const argv[])
 
 	// Compute program prefix (should be "", "./", "../" or whathever)
 	std::string prg_name = argv[0];
-	std::string prg_prefix = prg_name.substr(0, prg_name.rfind("gba_mus_ripper.exe"));
+	std::string prg_prefix = prg_name.substr(0, prg_name.rfind(GBA_MUS_RIPPER_NAME));
 
 	int sample_rate = 0, main_volume = 0;		// Use default values when those are '0'
 
@@ -305,7 +316,7 @@ int main(int argc, char *const argv[])
 		if (song_list[i] != song_tbl_end_ptr)
 		{
 			unsigned int bank_index = distance(sound_bank_list.begin(), sound_bank_index_list[i]);
-			std::string seq_rip_cmd = prg_prefix + "song_ripper.exe \"" + inGBA_path + "\" \"" + outPath;
+			std::string seq_rip_cmd = prg_prefix + SONG_RIPPER_NAME + " \"" + inGBA_path + "\" \"" + outPath;
 
 			// Add leading zeroes to file name
 			if (sb) seq_rip_cmd += "/soundbank_" + dec4(bank_index);
@@ -339,7 +350,7 @@ int main(int argc, char *const argv[])
 
 			std::string sbnumber = dec4(bank_index);
 			std::string foldername = "soundbank_" + sbnumber;
-			std::string sf_rip_args = prg_prefix + "sound_font_ripper.exe \"" + inGBA_path + "\" \"" + outPath + '/';
+			std::string sf_rip_args = prg_prefix + SOUND_FRONT_RIPPER_NAME + " \"" + inGBA_path + "\" \"" + outPath + '/';
 			sf_rip_args += foldername + '/' + foldername /* + "_@" + hex(*j) */ + ".sf2\"";
 
 			if (sample_rate) sf_rip_args += " -s" + std::to_string(sample_rate);
@@ -356,7 +367,7 @@ int main(int argc, char *const argv[])
 		// Rips each sound bank in a single soundfont file
 		// Build argument list to call sound_font_riper
 		// Output sound font named after the input ROM
-		std::string sf_rip_args = prg_prefix + "sound_font_ripper.exe \"" + inGBA_path + "\" \"" + outPath + '/' + name + ".sf2\"";
+		std::string sf_rip_args = prg_prefix + SOUND_FRONT_RIPPER_NAME + " \"" + inGBA_path + "\" \"" + outPath + '/' + name + ".sf2\"";
 		if (sample_rate) sf_rip_args += " -s" + std::to_string(sample_rate);
 		if (main_volume) sf_rip_args += " -mv" + std::to_string(main_volume);
 		// Pass -gm argument if necessary
