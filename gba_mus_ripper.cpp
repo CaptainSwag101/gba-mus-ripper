@@ -9,6 +9,7 @@
  * instruments to SoundFont 2.0 (.sf2) format.
  */
 
+#include <errno.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
