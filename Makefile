@@ -9,7 +9,10 @@ CC=gcc -std=c99
 # Parameters used for compilation
 FLAGS=-Wall -fdata-sections -ffunction-sections -fmax-errors=5 -Os
 # Additional parameters used for linking whole programs
-WHOLE=-s -fwhole-program -static
+# On Linux / Windows
+#WHOLE=-s -fwhole-program -static
+# -static can't be used on MacOS
+WHOLE=-s -fwhole-program
 
 all: $(shell mkdir build) $(shell mkdir out) out/sappy_detector out/song_ripper out/sound_font_ripper out/gba_mus_ripper
 

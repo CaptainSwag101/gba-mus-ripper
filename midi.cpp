@@ -71,7 +71,7 @@ void MIDI::write(FILE *out)
 		0x06000000,
 		0x0000,
 		0x0100,
-		(delta_time_per_beat << 8) | (delta_time_per_beat >> 8)
+		(uint16_t)(((delta_time_per_beat & 0x00ff) << 8) | ((delta_time_per_beat & 0xff00) >> 8))
 	};
 	fwrite(&mthd_chunk, 1, 14, out);
 

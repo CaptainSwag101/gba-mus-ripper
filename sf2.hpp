@@ -45,7 +45,7 @@ public:
 	FILE *out;
 	unsigned int default_sample_rate;
 
-	SF2(unsigned int sample_rate);
+	SF2(unsigned int sample_rate = 22050);
 	~SF2();
 	void write(FILE *outfile);
 	void add_new_preset(const char *name, int Patch, int Bank);
