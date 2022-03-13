@@ -7,7 +7,7 @@ GBA Mus Ripper is a suite of programs to rip music from Game Boy Advance (GBA) g
 Music rippers from GBA games already exists, but this one is more complete and versatile, and less buggy than the existing ones (as for the date of writing this).
 It's the first one that actually converts instruments to SoundFont format, including GameBoy instruments.
 
-GBAMusRipper is free and open source software. Anyone is free to redistribute it (with and without sources) and to improve it but just give me credit, THANK YOU VERY MUCH.
+GBAMusRipper is free and open source software. Anyone is free to redistribute it (please include sources under the terms of GNU GPLv3) and to improve it, but just give us credit, THANK YOU VERY MUCH.
 
 Applications:
 - Listen to GBA music with higher quality sound hardware than a GBA or an emulated GBA which only have 8-bit sound
